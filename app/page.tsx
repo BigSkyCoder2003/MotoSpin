@@ -1,95 +1,117 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+
+import { Container, Box, Typography, Button, Grid, SxProps, Theme } from '@mui/material';
+import { Shuffle } from '@mui/icons-material';
+import { useAuth } from "../contexts/AuthContext";
+import { useMotorcycle } from "../contexts/MotorcycleContext";
+import { ProtectedRoute, AuthForm } from "../components/auth";
+import { MotorcycleCard } from "../components/motorcycle/MotorcycleCard";
+import { APP_NAME, APP_DESCRIPTION } from "../utils/constants";
+
+const gridItemProps = {
+  item: true,
+  xs: 12,
+  sm: 6,
+  md: 4
+} as const;
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const { user } = useAuth();
+  const { 
+    motorcycle, 
+    favorites, 
+    isLoading, 
+    error,
+    loadRandomMotorcycle,
+    toggleFavorite,
+    isFavorite
+  } = useMotorcycle();
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  const containerSx: SxProps<Theme> = { py: 4 };
+  const titleBoxSx: SxProps<Theme> = { textAlign: 'center', mb: 6 };
+  const mainTitleSx: SxProps<Theme> = { mb: 2, fontWeight: 700 };
+  const buttonContainerSx: SxProps<Theme> = { display: 'flex', justifyContent: 'center', mb: 4 };
+  const authBoxSx: SxProps<Theme> = { 
+    display: 'flex', 
+    flexDirection: 'column', 
+    alignItems: 'center', 
+    gap: 3 
+  };
+
+  return (
+    <Container maxWidth="lg" sx={containerSx}>
+      <Box sx={titleBoxSx}>
+        <Typography 
+          variant="h2" 
+          component="h1"
+          sx={mainTitleSx}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          🏍️ {APP_NAME}
+        </Typography>
+        <Typography variant="h6" color="text.secondary">
+          {APP_DESCRIPTION}
+        </Typography>
+      </Box>
+
+      <ProtectedRoute 
+        fallback={
+          <Box sx={authBoxSx}>
+            <Typography variant="h5" color="text.secondary" textAlign="center">
+              Sign in to save your favorite motorcycles
+            </Typography>
+            <AuthForm />
+          </Box>
+        }
+      >
+        <Box>
+          <Box sx={buttonContainerSx}>
+            <Button
+              variant="contained"
+              size="large"
+              onClick={loadRandomMotorcycle}
+              startIcon={<Shuffle />}
+              disabled={isLoading}
+            >
+              Spin for a Random Motorcycle
+            </Button>
+          </Box>
+
+          {error && (
+            <Typography color="error" textAlign="center" sx={{ mb: 2 }}>
+              {error}
+            </Typography>
+          )}
+
+          {motorcycle && (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <MotorcycleCard
+                motorcycle={motorcycle}
+                isFavorite={isFavorite(motorcycle)}
+                onToggleFavorite={() => toggleFavorite(motorcycle)}
+              />
+            </Box>
+          )}
+
+          {favorites.length > 0 && (
+            <Box sx={{ mt: 6 }}>
+              <Typography variant="h5" sx={{ mb: 3 }}>
+                Your Favorites
+              </Typography>
+              <Grid container spacing={3}>
+                {favorites.map((favorite) => (
+                  <Grid {...gridItemProps} key={favorite.id}>
+                    <MotorcycleCard
+                      motorcycle={favorite}
+                      isFavorite={true}
+                      onToggleFavorite={() => toggleFavorite(favorite)}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          )}
+        </Box>
+      </ProtectedRoute>
+    </Container>
   );
 }
