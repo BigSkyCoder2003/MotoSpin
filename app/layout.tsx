@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { MotorcycleProvider } from "@/contexts/MotorcycleContext";
 import "./globals.css";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,7 +18,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "MotoSpin - Discover Random Motorcycles",
   description:
-    "Discover random motorcycles and save your favorites.",
+    "Discover random motorcycles and save your favorites. A fun way to explore different motorcycle models and their specifications.",
 };
 
 export default function RootLayout({
@@ -27,11 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>
-          <MotorcycleProvider>{children}</MotorcycleProvider>
-        </AuthProvider>
-      </body>
+      <AppRouterCacheProvider>
+        <body className={`${geistSans.variable} ${geistMono.variable}`}>
+          <AuthProvider>
+            <MotorcycleProvider>
+              {children}
+            </MotorcycleProvider>
+          </AuthProvider>
+        </body>
+      </AppRouterCacheProvider>
     </html>
   );
 }

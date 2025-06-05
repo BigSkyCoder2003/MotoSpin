@@ -1,8 +1,7 @@
-// Auth components
 export * from './auth';
 
-// Motorcycle components
+export * from './layout';
+
 export { MotorcycleCard } from './motorcycle/MotorcycleCard';
 
-// UI components
 export { default as LoadingSpinner } from './ui/LoadingSpinner'; 
