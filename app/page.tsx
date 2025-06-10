@@ -133,6 +133,7 @@ export default function Home() {
                           motorcycle={favorite}
                           isFavorite={true}
                           onToggleFavorite={() => toggleFavorite(favorite)}
+                          startCollapsed={true}
                         />
                       </Grid>
                     ))}

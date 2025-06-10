@@ -26,7 +26,4 @@ export const MOTORCYCLE_MAKES = [
   'TM Racing'
 ];
 
-// API endpoints
-export const API_ROUTES = {
-  HEALTH: '/api/health',
-} as const; 
+ 

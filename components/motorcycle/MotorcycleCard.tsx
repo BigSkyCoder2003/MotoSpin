@@ -30,18 +30,20 @@ interface MotorcycleCardProps {
   motorcycle: Motorcycle;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  startCollapsed?: boolean;
 }
 
 export const MotorcycleCard: React.FC<MotorcycleCardProps> = ({
   motorcycle,
   isFavorite = false,
-  onToggleFavorite
+  onToggleFavorite,
+  startCollapsed = false
 }) => {
   const [expandedSections, setExpandedSections] = useState<{[key: string]: boolean}>({
-    engine: true,
-    fuel: true,
-    chassis: true,
-    dimensions: true
+    engine: !startCollapsed,
+    fuel: !startCollapsed,
+    chassis: !startCollapsed,
+    dimensions: !startCollapsed
   });
 
   const toggleSection = (section: string) => {

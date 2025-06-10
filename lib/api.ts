@@ -1,3 +1,17 @@
+export const fetchMotorcycleMakes = async () => {
+  const response = await fetch('/api/motorcycle-makes', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch motorcycle makes');
+  }
+
+  return response.json();
+};
+
 export const fetchMotorcycle = async (make?: string, model?: string, year?: number) => {
   const params = new URLSearchParams();
   if (make) params.append('make', make);
@@ -20,6 +34,5 @@ export const fetchMotorcycle = async (make?: string, model?: string, year?: numb
 
   const data = await response.json();
   
-  // Return array of motorcycles with all available specs
   return Array.isArray(data) ? data : [data];
 }; 
