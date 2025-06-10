@@ -86,17 +86,6 @@ export default function Home() {
                 </Typography>
               </Box>
               <AuthForm />
-              <Typography variant="body2" color="text.secondary">
-                or
-              </Typography>
-              <Button 
-                variant="contained" 
-                size="large"
-                onClick={handleGoogleSignIn} 
-                sx={googleButtonSx}
-              >
-                🚀 Continue with Google
-              </Button>
             </Box>
           }        >
           <Box>
